@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app/Movie.dart';
+import 'package:flutter_app/MovieDetail.dart';
 
 
 // Main method starts execution
@@ -123,7 +124,8 @@ List<Widget> createMovieCardItem(List<Movie> movies, BuildContext context) {
           ),
           child: new GestureDetector(
             onTap: () {
-              ///TODO: Add detail page behaviour. Will be added in the next blog post.
+              Navigator.push(context, new MaterialPageRoute(builder:
+                  (BuildContext context) => new MovieDetail(movie)));
             },
             child: new Image.network(imageURL, fit: BoxFit.cover),
           )
