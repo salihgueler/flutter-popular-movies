@@ -19,14 +19,7 @@ class MovieList extends StatelessWidget {
       var response = await request.close();
       if (response.statusCode == HttpStatus.OK) {
         var json = await response.transform(UTF8.decoder).join();
-        // Decode the json response
-        var data = JSON.decode(json);
-        // Get the result list
-        List results = data["results"];
-        // Get the Movie list
-        List<Movie> movieList = createMovieList(results);
-        // Print the results.
-        return movieList;
+        return createMovieList(json);
       } else {
         print("Failed http call.");
       }
@@ -37,28 +30,43 @@ class MovieList extends StatelessWidget {
   }
 
   /// Method to parse information from the retrieved data
-  List<Movie> createMovieList(List data) {
-    List<Movie> list = new List();
-    for (int i = 0; i < data.length; i++) {
-      String title = data[i]["title"];
-      String posterPath = data[i]["poster_path"];
-      String backdropImage = data[i]["backdrop_path"];
-      String originalTitle = data[i]["original_title"];
-      double voteAverage = data[i]["vote_average"];
-      String overview = data[i]["overview"];
-      String releaseDate = data[i]["release_date"];
+  List<Movie> createMovieList(String resultString) {
 
-      Movie movie = new Movie(
-          title,
-          posterPath,
-          backdropImage,
-          originalTitle,
-          voteAverage,
-          overview,
-          releaseDate);
-      list.add(movie);
+    List results = getResultsList(resultString);
+
+    List<Movie> list = new List();
+    for (int i = 0; i < results.length; i++) {
+      list.add(createMovieObject(results[i]));
     }
     return list;
+  }
+
+  /// Method to create a movie object.
+  Movie createMovieObject(objectItem) {
+    String title = objectItem["title"];
+    String posterPath = objectItem["poster_path"];
+    String backdropImage = objectItem["backdrop_path"];
+    String originalTitle = objectItem["original_title"];
+    double voteAverage = objectItem["vote_average"];
+    String overview = objectItem["overview"];
+    String releaseDate = objectItem["release_date"];
+
+    return new Movie(
+        title,
+        posterPath,
+        backdropImage,
+        originalTitle,
+        voteAverage,
+        overview,
+        releaseDate);
+  }
+
+
+  List getResultsList(String resultString) {
+    // Decode the json response
+    var data = JSON.decode(resultString);
+    // Get the result list
+    return data["results"];
   }
 
   List<Widget> createMovieCardItem(List<Movie> movies, BuildContext context) {

@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app/Movie.dart';
-import 'package:flutter_app/MovieDetail.dart';
 import 'package:flutter_app/MovieList.dart';
 
 
