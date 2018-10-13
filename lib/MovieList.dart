@@ -8,17 +8,17 @@ import 'package:flutter_app/Movie.dart';
 import 'package:flutter_app/MovieDetail.dart';
 
 class MovieList extends StatelessWidget {
-
   /// Method to get movies from the backend
   Future<List<Movie>> getMovies() async {
-    final String url = 'http://api.themoviedb.org/3/movie/top_rated?api_key=9bc617f38b9d1d072ab43573f3b1d632';
+    final String url =
+        'http://api.themoviedb.org/3/movie/top_rated?api_key=9bc617f38b9d1d072ab43573f3b1d632';
     var httpClient = new HttpClient();
     try {
       // Make the call
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
-      if (response.statusCode == HttpStatus.OK) {
-        var json = await response.transform(UTF8.decoder).join();
+      if (response.statusCode == HttpStatus.ok) {
+        var json = await response.transform(utf8.decoder).join();
         return createMovieList(json);
       } else {
         print("Failed http call.");
@@ -31,7 +31,6 @@ class MovieList extends StatelessWidget {
 
   /// Method to parse information from the retrieved data
   List<Movie> createMovieList(String resultString) {
-
     List results = getResultsList(resultString);
 
     List<Movie> list = new List();
@@ -51,20 +50,13 @@ class MovieList extends StatelessWidget {
     String overview = objectItem["overview"];
     String releaseDate = objectItem["release_date"];
 
-    return new Movie(
-        title,
-        posterPath,
-        backdropImage,
-        originalTitle,
-        voteAverage,
-        overview,
-        releaseDate);
+    return new Movie(title, posterPath, backdropImage, originalTitle,
+        voteAverage, overview, releaseDate);
   }
-
 
   List getResultsList(String resultString) {
     // Decode the json response
-    var data = JSON.decode(resultString);
+    var data = json.decode(resultString);
     // Get the result list
     return data["results"];
   }
@@ -80,18 +72,28 @@ class MovieList extends StatelessWidget {
         var imageURL = "https://image.tmdb.org/t/p/w500/" + movie.posterPath;
         // List item created with an image of the poster
         var listItem = new GridTile(
-            footer: new GridTileBar(
-              backgroundColor: Colors.black45,
-              title: new Text(movie.title),
-            ),
+            footer: new GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              new MovieDetail(movie)));
+                },
+                child: new GridTileBar(
+                  backgroundColor: Colors.black45,
+                  title: new Text(movie.title),
+                )),
             child: new GestureDetector(
               onTap: () {
-                Navigator.push(context, new MaterialPageRoute(builder:
-                    (BuildContext context) => new MovieDetail(movie)));
+                Navigator.push(
+                    context,
+                    new MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            new MovieDetail(movie)));
               },
               child: new Image.network(imageURL, fit: BoxFit.cover),
-            )
-        );
+            ));
         listElementWidgetList.add(listItem);
       }
     }
@@ -102,17 +104,15 @@ class MovieList extends StatelessWidget {
   Widget build(BuildContext context) {
     return new FutureBuilder(
         future: getMovies(),
-        builder: (BuildContext context,
-            AsyncSnapshot<List> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
           if (!snapshot.hasData)
             // Shows progress indicator until the data is load.
             return new MaterialApp(
                 home: new Scaffold(
-                  body: new Center(
-                    child: new CircularProgressIndicator(),
-                  ),
-                )
-            );
+              body: new Center(
+                child: new CircularProgressIndicator(),
+              ),
+            ));
           // Shows the real data with the data retrieved.
           List movies = snapshot.data;
           return new CustomScrollView(
@@ -129,7 +129,6 @@ class MovieList extends StatelessWidget {
               ),
             ],
           );
-        }
-    );
+        });
   }
 }
