@@ -17,8 +17,8 @@ class MovieList extends StatelessWidget {
       // Make the call
       var request = await httpClient.getUrl(Uri.parse(url));
       var response = await request.close();
-      if (response.statusCode == HttpStatus.OK) {
-        var json = await response.transform(UTF8.decoder).join();
+      if (response.statusCode == HttpStatus.ok) {
+        var json = await response.transform(utf8.decoder).join();
         return createMovieList(json);
       } else {
         print("Failed http call.");
@@ -56,7 +56,7 @@ class MovieList extends StatelessWidget {
 
   List getResultsList(String resultString) {
     // Decode the json response
-    var data = JSON.decode(resultString);
+    var data = json.decode(resultString);
     // Get the result list
     return data["results"];
   }
